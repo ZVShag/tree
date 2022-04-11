@@ -1,121 +1,70 @@
 ﻿#include <iostream>
+
 using namespace std;
-
-struct Node {
-    string val;
+struct Node
+{
+    int data;
     Node* next;
-
-    Node(string _val) : val(_val), next(nullptr) {}
 };
 
-struct list {
-    Node* first;
-    Node* last;
+class List
+{
+private:
+    Node* head; //"голова" связанного списка
 
-    list() : first(nullptr), last(nullptr) {}
-
-    bool is_empty() {
-        return first == nullptr;
+public:
+    List() //конструктор класса без параметров
+    {
+        head = NULL; //первого элемента пока нет
     }
 
-    void push_back(string _val) {
-        Node* p = new Node(_val);
-        if (is_empty()) {
-            first = p;
-            last = p;
-            return;
+    //метод, добавляющий новый узел в список
+    void addNode(int d)
+    {
+        Node* nd = new Node; //динамически создаем новый узел
+
+        nd->data = d;        //задаем узлу данные
+        nd->next = NULL;     //новый узел в конце, поэтому NULL
+
+        if (head == NULL)     //если создаем первый узел
+            head = nd;
+        else                 //если узел уже не первый
+        {
+            Node* current = head;
+
+            //ищем в цикле предшествующий последнему узел
+            while (current->next != NULL)
+                current = current->next;
+
+            //предшествующий указывает на последний
+            current->next = nd;
         }
-        last->next = p;
-        last = p;
     }
 
-    void print() {
-        if (is_empty()) return;
-        Node* p = first;
-        while (p) {
-            cout << p->val << " ";
-            p = p->next;
-        }
-        cout << endl;
-    }
+    //метод, выводящий связанный список на экран
+    void printList()
+    {
+        Node* current = head;
 
-    Node* find(string _val) {
-        Node* p = first;
-        while (p && p->val != _val) p = p->next;
-        return (p && p->val == _val) ? p : nullptr;
-    }
-
-    void remove_first() {
-        if (is_empty()) return;
-        Node* p = first;
-        first = p->next;
-        delete p;
-    }
-
-    void remove_last() {
-        if (is_empty()) return;
-        if (first == last) {
-            remove_first();
-            return;
+        while (current != NULL)
+        {
+            cout << current->data << endl;
+            current = current->next;
         }
-        Node* p = first;
-        while (p->next != last) p = p->next;
-        p->next = nullptr;
-        delete last;
-        last = p;
-    }
-
-    void remove(string _val) {
-        if (is_empty()) return;
-        if (first->val == _val) {
-            remove_first();
-            return;
-        }
-        else if (last->val == _val) {
-            remove_last();
-            return;
-        }
-        Node* slow = first;
-        Node* fast = first->next;
-        while (fast && fast->val != _val) {
-            fast = fast->next;
-            slow = slow->next;
-        }
-        if (!fast) {
-            cout << "This element does not exist" << endl;
-            return;
-        }
-        slow->next = fast->next;
-        delete fast;
-    }
-
-    Node* operator[] (const int index) {
-        if (is_empty()) return nullptr;
-        Node* p = first;
-        for (int i = 0; i < index; i++) {
-            p = p->next;
-            if (!p) return nullptr;
-        }
-        return p;
     }
 };
 
 int main()
 {
-    list l;
-    cout << l.is_empty() << endl;
-    l.push_back("3");
-    l.push_back("123");
-    l.push_back("8");
-    l.print();
-    cout << l.is_empty() << endl;
-    l.remove("123");
-    l.print();
-    l.push_back("1234");
-    l.remove_first();
-    l.print();
-    l.remove_last();
-    l.print();
-    cout << l[0]->val << endl;
+    List myList;
+
+    myList.addNode(5);
+    myList.addNode(11);
+    myList.addNode(27);
+    myList.addNode(35);
+    myList.addNode(50);
+
+    myList.printList();
+
     return 0;
 }
